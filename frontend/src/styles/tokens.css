@@ -1,0 +1,16 @@
+:root {
+  /* Chef's Kitchen Dark Theme */
+  --color-bg: #0c0a09; /* stone-950 */
+  --color-surface: #1c1917; /* stone-900 */
+  --color-surface-hover: #292524; /* stone-800 */
+  --color-border: #44403c; /* stone-700 */
+  
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  
+  --color-primary: var(--color-amber-500);
+  
+  --color-text: #fafaf9; /* stone-50 */
+  --color-text-muted: #a8a29e; /* stone-400 */
+}
