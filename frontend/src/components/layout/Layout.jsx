@@ -1,7 +1,22 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 
 export function Layout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  // Close menu on ESC
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div className="text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-surface-container-lowest flex flex-col min-h-screen bg-surface-container-high overflow-x-hidden">
       {/* Header */}
@@ -20,7 +35,7 @@ export function Layout() {
 <span className="">RUNNING: SPRING_DIV_1 [IN 04H 21M]</span>
 </div>
 </div>
-{/* Navigation links from JSON */}
+{/* Desktop Navigation */}
 <nav className="hidden md:flex items-center space-x-6">
 <Link className="text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/">
         Home
@@ -53,19 +68,70 @@ export function Layout() {
 </button>
 </div>
 {/* Trailing Action: terminal_join - hidden on mobile */}
-<button className="hidden md:inline-flex items-center gap-2 bg-primary-container text-surface-container-lowest px-3 py-1.5 font-label-mono text-label-mono font-bold hover:translate-x-[-1px] hover:translate-y-[-1px] hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none" onClick={() => { document.getElementById('cli-section').scrollIntoView({behavior: 'smooth'}) }}>
+<button className="hidden md:inline-flex items-center gap-2 bg-primary-container text-surface-container-lowest px-3 py-1.5 font-label-mono text-label-mono font-bold hover:translate-x-[-1px] hover:translate-y-[-1px] hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none" onClick={() => { document.getElementById('cli-section')?.scrollIntoView({behavior: 'smooth'}) }}>
 <span className="">terminal_join</span>
 <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
 </button>
 {/* Trailing Action: git_checkout - compact on mobile */}
-<a className="inline-flex items-center gap-1.5 border border-outline-variant bg-surface-container-low text-on-surface px-2 sm:px-2.5 py-1.5 font-label-mono text-label-mono hover:border-outline transition-none text-xs" href="https://github.com" rel="noreferrer" target="_blank">
+<a className="hidden sm:inline-flex items-center gap-1.5 border border-outline-variant bg-surface-container-low text-on-surface px-2 sm:px-2.5 py-1.5 font-label-mono text-label-mono hover:border-outline transition-none text-xs" href="https://github.com" rel="noreferrer" target="_blank">
 <span className="text-primary-container">$</span>
-<span className="hidden sm:inline">git_checkout</span>
-<span className="sm:hidden">GitHub</span>
+<span className="">git_checkout</span>
 </a>
+{/* Hamburger Button - mobile only */}
+<button
+  className="md:hidden flex flex-col items-center justify-center gap-[5px] w-9 h-9 border border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-primary-container hover:text-primary-container transition-none"
+  onClick={() => setMenuOpen(!menuOpen)}
+  aria-label="Toggle menu"
+>
+  <span className={`block w-4 h-0.5 bg-current transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-[6.5px]' : ''}`}></span>
+  <span className={`block w-4 h-0.5 bg-current transition-all duration-200 ${menuOpen ? 'opacity-0 scale-x-0' : ''}`}></span>
+  <span className={`block w-4 h-0.5 bg-current transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-[6.5px]' : ''}`}></span>
+</button>
 </div>
 </header>
-      
+
+{/* Mobile Menu Drawer */}
+<div
+  className={`md:hidden fixed inset-0 z-40 transition-all duration-300 ${menuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+>
+  {/* Backdrop */}
+  <div
+    className={`absolute inset-0 bg-surface-container-lowest/80 transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'opacity-0'}`}
+    onClick={() => setMenuOpen(false)}
+  />
+  {/* Drawer panel */}
+  <div
+    className={`absolute top-14 right-0 w-64 bg-surface-container-high border-l border-b border-outline-variant transition-transform duration-300 ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+  >
+    {/* Nav Links */}
+    <nav className="flex flex-col divide-y divide-outline-variant font-label-mono text-label-mono">
+      <Link
+        to="/"
+        className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-low uppercase tracking-widest transition-none"
+      >
+        <span className="text-primary-container font-bold">/</span> Home
+      </Link>
+      <Link
+        to="/events"
+        className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-low uppercase tracking-widest transition-none"
+      >
+        <span className="text-primary-container font-bold">/</span> Events
+      </Link>
+      <Link
+        to="/admin"
+        className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-low uppercase tracking-widest transition-none"
+      >
+        <span className="text-primary-container font-bold">/</span> Admin
+      </Link>
+    </nav>
+    {/* Bottom status */}
+    <div className="px-5 py-3 border-t border-outline-variant font-label-mono text-label-mono text-[10px] text-outline flex items-center gap-2">
+      <span className="w-1.5 h-1.5 bg-primary-container inline-block animate-pulse"></span>
+      STATUS: OPERATIONAL
+    </div>
+  </div>
+</div>
+
       <main className="flex-grow">
         <Outlet />
       </main>
