@@ -64,19 +64,22 @@ router.get('/events', validate(getEventsSchema), async (req, res, next) => {
       where.startsAt = { gte: new Date() };
     }
 
+    const parsedPage = parseInt(page, 10) || 1;
+    const parsedLimit = parseInt(limit, 10) || 10;
+
     const total = await prisma.event.count({ where });
     const events = await prisma.event.findMany({
       where,
       orderBy: { startsAt: 'asc' },
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (parsedPage - 1) * parsedLimit,
+      take: parsedLimit,
     });
 
     const meta = {
-      page,
-      limit,
+      page: parsedPage,
+      limit: parsedLimit,
       total,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / parsedLimit)
     };
 
     return sendSuccess(res, 'Events retrieved', events, meta);

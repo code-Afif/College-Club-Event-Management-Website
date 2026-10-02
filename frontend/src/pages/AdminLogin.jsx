@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAdminLogin } from '../hooks/useAdmin.js';
-import { Card, CardHeader, CardContent } from '../components/ui/Card.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { Lock } from 'lucide-react';
+import { Lock, Eye, EyeOff } from 'lucide-react';
 
 export function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const loginMutation = useAdminLogin();
 
@@ -23,46 +23,58 @@ export function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center pb-0">
-          <div className="mx-auto bg-amber-500/10 w-12 h-12 flex items-center justify-center rounded-xl mb-4 border border-amber-500/20">
-            <Lock className="text-amber-500 w-6 h-6" />
+    <div className="min-h-[80vh] flex items-center justify-center p-4 bg-surface-container-high">
+      <div className="w-full max-w-md border border-outline-variant bg-surface-container-low p-space-xl">
+        <div className="text-center pb-space-lg mb-space-lg border-b border-outline-variant relative">
+          <Link to="/" className="absolute top-0 left-0 font-label-mono text-label-mono text-outline hover:text-primary transition-none underline">
+            [RETURN TO ROOT]
+          </Link>
+          <div className="mx-auto bg-primary-container w-12 h-12 flex items-center justify-center mb-4 mt-6 border border-outline-variant">
+            <Lock className="text-surface-container-lowest w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-display font-bold">Admin Kitchen</h1>
-          <p className="text-text-muted mt-2 text-sm">Authorized personnel only</p>
-        </CardHeader>
-        <CardContent className="pt-8">
+          <h1 className="text-2xl font-headline font-bold text-primary uppercase">Sys Admin</h1>
+          <p className="text-on-surface-variant font-label-mono text-label-mono mt-2">RESTRICTED_ACCESS // AUTHORIZED_ONLY</p>
+        </div>
+        <div>
           <form onSubmit={handleSubmit} className="space-y-4">
             {loginMutation.isError && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-2 rounded-lg text-sm text-center">
-                {loginMutation.error.message || 'Invalid credentials'}
+              <div className="bg-error/10 border border-error text-error font-label-mono text-label-mono px-4 py-2 text-center">
+                [ERR] {loginMutation.error.message || 'AUTHENTICATION_FAILED'}
               </div>
             )}
             <div>
               <Input 
-                type="email" 
-                placeholder="Admin Email" 
+                type="text" 
+                placeholder="ADMIN_ID [USERNAME]" 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
+                className="bg-surface-container border-outline-variant text-on-surface"
               />
             </div>
-            <div>
+            <div className="relative">
               <Input 
-                type="password" 
-                placeholder="Password" 
+                type={showPassword ? "text" : "password"} 
+                placeholder="CREDENTIAL_TOKEN [PASSWORD]" 
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
+                className="pr-10 bg-surface-container border-outline-variant text-on-surface"
               />
+              <button 
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-none"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
-            <Button type="submit" className="w-full mt-2" disabled={loginMutation.isPending}>
-              {loginMutation.isPending ? 'Authenticating...' : 'Enter Kitchen'}
+            <Button type="submit" className="w-full mt-4 bg-primary-container text-surface-container-lowest border border-primary-container hover:-translate-x-px hover:-translate-y-px hard-shadow-citron transition-none" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? 'NEGOTIATING...' : 'INITIALIZE_SESSION [↵]'}
             </Button>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

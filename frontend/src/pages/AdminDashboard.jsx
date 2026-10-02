@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEvents } from '../hooks/useEvents.js';
 import { useAdminRegistrations, useAdminDeleteEvent } from '../hooks/useAdmin.js';
-import { Card, CardHeader, CardContent } from '../components/ui/Card.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { Badge } from '../components/ui/Badge.jsx';
-import { LogOut, Trash2, Download } from 'lucide-react';
+import { LogOut, Trash2, Download, Plus } from 'lucide-react';
 import { apiFetch } from '../lib/api.js';
+import { CreateEventModal } from '../components/admin/CreateEventModal.jsx';
+import { EditEventModal } from '../components/admin/EditEventModal.jsx';
 
 export function AdminDashboard() {
   const navigate = useNavigate();
   const { data: events, refetch: refetchEvents } = useEvents({ limit: 100 });
   const { data: registrations } = useAdminRegistrations();
+  const [eventToDelete, setEventToDelete] = useState(null);
+  const [eventToEdit, setEventToEdit] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const deleteMutation = useAdminDeleteEvent();
 
   useEffect(() => {
@@ -42,104 +45,172 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-surface border-b border-border p-4 sticky top-0 z-10">
+    <div className="min-h-[80vh] bg-surface-container-high w-full">
+      <header className="bg-surface-container border-b border-outline-variant p-4 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-display font-bold">Admin Dashboard</h1>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-400 hover:bg-red-500/10">
-            <LogOut size={16} className="mr-2" /> Logout
+          <div className="flex items-center gap-3">
+            <Link to="/" className="font-label-mono text-label-mono text-outline hover:text-primary transition-none underline mr-2">
+              [RETURN TO ROOT]
+            </Link>
+            <span className="font-label-mono text-label-mono text-primary-container bg-surface-container-low px-2 py-1 border border-outline-variant tracking-wider">
+              [TELEMETRY]
+            </span>
+            <h1 className="text-xl font-headline font-bold uppercase text-primary">System Command</h1>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleLogout} className="border-error text-error hover:bg-error hover:text-onError">
+            <LogOut size={16} className="mr-2" /> DISCONNECT_SESSION
           </Button>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-text-muted text-sm font-medium mb-1">Total Events</div>
-              <div className="text-3xl font-display font-bold text-amber-500">{events?.meta?.total || 0}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-text-muted text-sm font-medium mb-1">Total Registrations</div>
-              <div className="text-3xl font-display font-bold text-amber-500">{registrations?.meta?.total || 0}</div>
-            </CardContent>
-          </Card>
+        {/* KPI Grid */}
+        <div className="grid md:grid-cols-3 gap-0 border-t border-l border-outline-variant">
+          <div className="border-r border-b border-outline-variant bg-surface-container-low p-space-lg flex flex-col justify-between">
+            <div className="text-outline font-label-mono text-label-mono mb-2">// TOTAL_EVENTS</div>
+            <div className="text-4xl font-headline font-bold text-primary">{events?.meta?.total || 0}</div>
+          </div>
+          <div className="border-r border-b border-outline-variant bg-surface-container-low p-space-lg flex flex-col justify-between">
+            <div className="text-outline font-label-mono text-label-mono mb-2">// TOTAL_ALLOCATIONS</div>
+            <div className="text-4xl font-headline font-bold text-primary">{registrations?.meta?.total || 0}</div>
+          </div>
+          <div className="border-r border-b border-outline-variant bg-surface-container-low p-space-lg flex flex-col justify-between">
+            <div className="text-outline font-label-mono text-label-mono mb-2">// SYSTEM_STATUS</div>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="w-3 h-3 bg-primary-container animate-pulse"></span>
+              <span className="font-label-mono text-label-mono text-primary-container font-bold">OPTIMAL</span>
+            </div>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader className="flex flex-row justify-between items-center border-b border-border pb-4">
-            <h2 className="text-xl font-display font-bold">Manage Events</h2>
-          </CardHeader>
-          <CardContent className="p-0 overflow-x-auto">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-surface border-b border-border">
+        {/* Events Table */}
+        <div className="border border-outline-variant bg-surface-container-low">
+          <div className="flex flex-row justify-between items-center border-b border-outline-variant p-4 bg-surface-container">
+            <h2 className="text-xl font-headline font-bold uppercase text-primary">Active Operations</h2>
+            <Button size="sm" variant="primary" onClick={() => setIsCreateModalOpen(true)} className="gap-2 font-label-mono text-label-mono">
+              <Plus size={16} /> INITIALIZE_EVENT
+            </Button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap font-label-mono">
+              <thead className="bg-surface-container-lowest border-b border-outline-variant text-outline">
                 <tr>
-                  <th className="px-6 py-4 font-medium text-text-muted">Name</th>
-                  <th className="px-6 py-4 font-medium text-text-muted">Date</th>
-                  <th className="px-6 py-4 font-medium text-text-muted">Category</th>
-                  <th className="px-6 py-4 font-medium text-text-muted text-right">Actions</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Operation_ID</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Timestamp</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Classification</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider text-right">Interrupt</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-outline-variant">
                 {events?.data?.map(event => (
-                  <tr key={event.id} className="hover:bg-surface-hover/50 transition-colors">
-                    <td className="px-6 py-4 font-medium">{event.name}</td>
-                    <td className="px-6 py-4 font-mono text-xs">{new Date(event.startsAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4"><Badge>{event.category}</Badge></td>
+                  <tr key={event.id} className="hover:bg-surface-container transition-none text-on-surface">
+                    <td className="px-6 py-4 font-bold text-primary">{event.name.toUpperCase()}</td>
+                    <td className="px-6 py-4 text-on-surface-variant">{new Date(event.startsAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-surface-container-highest border border-outline-variant text-xs">
+                        {event.category.toUpperCase()}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 text-right">
                       <button 
-                        className="text-red-500 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition-colors"
-                        onClick={() => {
-                          if(confirm('Delete event?')) deleteMutation.mutate(event.id);
-                        }}
+                        className="text-primary border border-primary px-2 py-1 hover:bg-primary hover:text-onPrimary transition-none uppercase mr-2"
+                        onClick={() => setEventToEdit(event)}
                       >
-                        <Trash2 size={16} />
+                        [MOD]
+                      </button>
+                      <button 
+                        className="text-error border border-error px-2 py-1 hover:bg-error hover:text-onError transition-none uppercase"
+                        onClick={() => setEventToDelete(event)}
+                      >
+                        [SIGKILL]
                       </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row justify-between items-center border-b border-border pb-4">
-            <h2 className="text-xl font-display font-bold">Recent Registrations</h2>
-            <Button size="sm" variant="outline" onClick={handleExport} className="gap-2">
-              <Download size={16} /> Export CSV
+        {/* Registrations Table */}
+        <div className="border border-outline-variant bg-surface-container-low">
+          <div className="flex flex-row justify-between items-center border-b border-outline-variant p-4 bg-surface-container">
+            <h2 className="text-xl font-headline font-bold uppercase text-primary">Allocation Registry</h2>
+            <Button size="sm" variant="primary" onClick={handleExport} className="gap-2 font-label-mono text-label-mono">
+              <Download size={16} /> DUMP_CSV
             </Button>
-          </CardHeader>
-          <CardContent className="p-0 overflow-x-auto">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-surface border-b border-border">
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap font-label-mono">
+              <thead className="bg-surface-container-lowest border-b border-outline-variant text-outline">
                 <tr>
-                  <th className="px-6 py-4 font-medium text-text-muted">Student</th>
-                  <th className="px-6 py-4 font-medium text-text-muted">Email</th>
-                  <th className="px-6 py-4 font-medium text-text-muted">Event</th>
-                  <th className="px-6 py-4 font-medium text-text-muted">Registered At</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Node_Identity</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Address</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Target_Operation</th>
+                  <th className="px-6 py-4 font-bold uppercase tracking-wider">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-outline-variant">
                 {registrations?.data?.map(reg => (
-                  <tr key={reg.id} className="hover:bg-surface-hover/50 transition-colors">
-                    <td className="px-6 py-4 font-medium">
-                      {reg.name}
-                      <div className="text-xs text-text-muted font-mono">{reg.collegeYear}</div>
+                  <tr key={reg.id} className="hover:bg-surface-container transition-none text-on-surface">
+                    <td className="px-6 py-4">
+                      <div className="font-bold">{reg.name.toUpperCase()}</div>
+                      <div className="text-xs text-outline">{reg.collegeYear.toUpperCase()}</div>
                     </td>
-                    <td className="px-6 py-4 text-text-muted">{reg.email}</td>
-                    <td className="px-6 py-4"><Badge variant="amber">{reg.event?.name}</Badge></td>
-                    <td className="px-6 py-4 font-mono text-xs text-text-muted">{new Date(reg.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-on-surface-variant">{reg.email}</td>
+                    <td className="px-6 py-4 text-primary">{reg.event?.name.toUpperCase()}</td>
+                    <td className="px-6 py-4 text-outline">{new Date(reg.createdAt).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
       </main>
+
+      {/* Confirmation Modal */}
+      {eventToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-container-high/90 backdrop-blur-sm">
+          <div className="bg-surface-container-low border border-outline-variant p-6 max-w-sm w-full font-label-mono hard-shadow-dark">
+            <div className="border-b border-outline-variant pb-2 mb-4">
+              <h3 className="text-xl font-headline font-bold uppercase text-error">FATAL: DROP OPERATION</h3>
+            </div>
+            <p className="text-on-surface-variant text-sm mb-6 font-body-md leading-relaxed">
+              Confirm irrecoverable deletion of operation sequence: <br/>
+              <span className="font-bold text-on-surface">"{eventToDelete.name.toUpperCase()}"</span>.<br/><br/>
+              This process will unlink all associated allocations and cascade.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button 
+                variant="outline" 
+                className="hover:bg-surface-container"
+                onClick={() => setEventToDelete(null)}
+              >
+                ABORT
+              </Button>
+              <Button 
+                variant="danger" 
+                onClick={() => {
+                  deleteMutation.mutate(eventToDelete.id);
+                  setEventToDelete(null);
+                }}
+              >
+                EXEC_SIGKILL
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      <CreateEventModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
+      <EditEventModal 
+        isOpen={!!eventToEdit} 
+        onClose={() => setEventToEdit(null)}
+        event={eventToEdit}
+      />
     </div>
   );
 }

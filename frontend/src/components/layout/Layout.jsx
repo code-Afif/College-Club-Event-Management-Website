@@ -1,46 +1,112 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { Terminal } from 'lucide-react';
-
-export function Navbar() {
-  return (
-    <nav className="sticky top-0 z-40 w-full backdrop-blur-lg bg-background/80 border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-amber-500/10 p-2 rounded-lg border border-amber-500/20 group-hover:bg-amber-500/20 transition-colors">
-              <Terminal className="text-amber-500 w-5 h-5" />
-            </div>
-            <span className="font-display font-bold text-lg tracking-tight">CodeClub</span>
-          </Link>
-          <div className="flex space-x-6 items-center">
-            <Link to="/events" className="text-text-muted hover:text-text font-medium transition-colors">Events</Link>
-            <Link to="/admin" className="text-text-muted hover:text-text font-medium transition-colors text-sm">Admin</Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-export function Footer() {
-  return (
-    <footer className="border-t border-white/5 py-12 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-text-muted">
-        <p className="font-mono text-sm">© {new Date().getFullYear()} CodeClub. Built with ❤️ and lots of coffee.</p>
-      </div>
-    </footer>
-  );
-}
+import { Outlet, Link } from 'react-router-dom';
 
 export function Layout() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-surface-container-lowest flex flex-col min-h-screen bg-surface-container-high">
+      {/* Header */}
+      <header className="w-full px-space-md lg:px-space-lg flex items-center justify-between h-14 border-b border-outline-variant sticky top-0 z-50 bg-surface-container-high">
+{/* Brand / Identity */}
+<div className="flex items-center gap-space-md">
+<Link className="font-headline-sm text-headline-sm font-bold uppercase tracking-tight text-primary flex items-center gap-2" to="/">
+<span className="inline-block w-2.5 h-2.5 bg-primary-container animate-pulse"></span>
+<span className="">COLLECTIVE // SYS_LAB</span>
+</Link>
+<span className="hidden xl:inline-block px-1.5 py-0.5 border border-outline-variant bg-surface-container-low text-primary-container font-label-mono text-label-mono">
+        [SYS_REV 4.2]
+      </span>
+<div className="hidden 2xl:flex items-center gap-1.5 pl-2 text-on-surface-variant font-label-mono text-label-mono border-l border-outline-variant">
+<span className="inline-block w-1.5 h-1.5 bg-secondary-container"></span>
+<span className="">RUNNING: SPRING_DIV_1 [IN 04H 21M]</span>
+</div>
+</div>
+{/* Navigation links from JSON */}
+<nav className="hidden md:flex items-center space-x-6">
+<Link className="text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/">
+        Home
+      </Link>
+<Link className="text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/events">
+        Events
+      </Link>
+<Link className="text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/admin">
+        Admin
+      </Link>
+</nav>
+{/* Trailing Actions & Shell Tools */}
+<div className="flex items-center gap-3">
+{/* Search Input inline right */}
+<div className="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-2.5 py-1 text-on-surface font-label-mono text-label-mono w-48 focus-within:border-primary-container">
+<span className="text-outline mr-1.5 font-bold">❯</span>
+<input className="bg-transparent border-0 p-0 text-on-surface placeholder:text-outline focus:ring-0 w-full font-label-mono text-label-mono" placeholder="grep cmd [⌘K]..." type="text" />
+</div>
+{/* Icon Actions (terminal, notifications, code) */}
+<div className="flex items-center border border-outline-variant divide-x divide-outline-variant bg-surface-container-low">
+<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center" title="terminal">
+<span className="material-symbols-outlined text-[18px]">terminal</span>
+</button>
+<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center relative" title="notifications">
+<span className="material-symbols-outlined text-[18px]">notifications</span>
+<span className="absolute top-1 right-1 w-1.5 h-1.5 bg-secondary-container"></span>
+</button>
+<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center" title="code">
+<span className="material-symbols-outlined text-[18px]">code</span>
+</button>
+</div>
+{/* Trailing Action: terminal_join */}
+<button className="hidden sm:inline-flex items-center gap-2 bg-primary-container text-surface-container-lowest px-3 py-1.5 font-label-mono text-label-mono font-bold hover:translate-x-[-1px] hover:translate-y-[-1px] hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none" onClick={() => { document.getElementById('cli-section').scrollIntoView({behavior: 'smooth'}) }}>
+<span className="">terminal_join</span>
+<span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+</button>
+{/* Trailing Action: git_checkout */}
+<a className="inline-flex items-center gap-1.5 border border-outline-variant bg-surface-container-low text-on-surface px-2.5 py-1.5 font-label-mono text-label-mono hover:border-outline transition-none" href="https://github.com" rel="noreferrer" target="_blank">
+<span className="text-primary-container">$</span>
+<span className="">git_checkout</span>
+</a>
+</div>
+</header>
+      
       <main className="flex-grow">
         <Outlet />
       </main>
-      <Footer />
+
+      {/* Footer */}
+      <footer className="w-full px-space-md lg:px-space-xl py-space-xl flex flex-col lg:flex-row justify-between items-start lg:items-center border-t border-outline-variant gap-space-lg bg-surface-container-high">
+{/* Left Column: Identity & Disclaimer */}
+<div className="space-y-2">
+<div className="font-headline-sm text-headline-sm font-bold text-primary flex items-center gap-2">
+<span className="w-2 h-2 bg-primary-container"></span>
+<span className="">COLLECTIVE // SYS_LAB</span>
+</div>
+<div className="font-ticker-mono text-ticker-mono text-on-surface-variant max-w-xl">
+        SYS_REF // © 2025 ALGORITHMIC DEV COLLECTIVE. ALL RIGHTS RESERVED. RUNTIME: V4.18.9-RC2
+      </div>
+<div className="font-label-mono text-label-mono text-outline text-[11px]">
+        CAMPUS NODE 42.3601° N, 71.0942° W — FACULTY OF ELECTRICAL ENGINEERING &amp; COMPUTER SCIENCE
+      </div>
+</div>
+{/* Right Column: System Links & Operational Status from JSON */}
+<div className="flex flex-wrap items-center gap-4 lg:gap-6 font-label-mono text-label-mono">
+<span className="text-primary-container flex items-center gap-1.5 font-bold">
+<span className="inline-block w-2 h-2 bg-primary-container"></span>
+        STATUS: OPERATIONAL
+      </span>
+<a className="text-on-surface-variant hover:text-primary-container underline decoration-primary-container" href="#rss">
+        RSS_FEED
+      </a>
+<a className="text-on-surface-variant hover:text-primary-container underline decoration-primary-container" href="https://discord.com" rel="noreferrer" target="_blank">
+        DISCORD_SOCKET
+      </a>
+<span className="text-outline">
+        AFFILIATION // CS_ENGINEERING
+      </span>
+<a className="text-on-surface-variant hover:text-primary-container underline decoration-primary-container" href="#security">
+        SECURITY_DISCLOSURE
+      </a>
+<a className="text-on-surface-variant hover:text-primary-container underline decoration-primary-container" href="#api">
+        TERMINAL_API
+      </a>
+</div>
+</footer>
     </div>
   );
 }

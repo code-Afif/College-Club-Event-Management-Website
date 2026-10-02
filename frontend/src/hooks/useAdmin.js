@@ -41,3 +41,15 @@ export function useAdminDeleteEvent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] })
   });
 }
+
+export function useAdminUpdateEvent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => 
+      apiFetch(`/admin/events/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] })
+  });
+}

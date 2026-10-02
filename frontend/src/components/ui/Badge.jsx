@@ -3,12 +3,12 @@ import { cn } from './Button.jsx';
 
 export function Badge({ className, variant = 'default', children, ...props }) {
   const variants = {
-    default: 'bg-surface border border-border text-text-muted',
-    amber: 'bg-amber-500/10 border border-amber-500/20 text-amber-500',
+    default: 'bg-surface-container-low border border-outline-variant text-on-surface',
+    primary: 'bg-primary-container/10 border border-primary-container text-primary-container',
   };
   return (
     <span 
-      className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold font-mono", variants[variant], className)}
+      className={cn("inline-block px-1.5 py-0.5 border font-label-mono text-label-mono", variants[variant], className)}
       {...props}
     >
       {children}
