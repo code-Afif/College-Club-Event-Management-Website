@@ -388,12 +388,12 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 </div>
 <div className="mt-4 flex items-center justify-between pt-3 border-t border-outline-variant font-label-mono text-label-mono text-xs">
 <span className="text-outline">SHOWING TOP 5 OF 380 COMPETITORS</span>
-<a className="text-primary-container font-bold hover:underline" href="#">EXPLORE FULL MATRIX [?]</a>
-</div>
+<a className="text-primary-container font-bold hover:underline" href="#">EXPLORE FULL MATRIX [â†’]</a>
 </div>
 </div>
 </div>
 </section>
+
 {/* ========================================================================= */}
 {/* 7. TELEMETRY & COMMUNITY METRICS DASHBOARD */}
 {/* ========================================================================= */}
@@ -420,7 +420,7 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 {/* Metric 1 */}
 <div className="p-space-md lg:p-space-lg bg-surface-container-low">
 <div className="font-label-mono text-label-mono text-outline mb-2">TOTAL_EVALUATIONS</div>
-<div className="font-display-xl text-headline-lg lg:text-display-xl font-extrabold text-primary mb-1 tracking-tight">
+<div className="font-display-xl text-[32px] lg:text-[48px] font-extrabold text-primary mb-1 tracking-tight">
           18,490
         </div>
 <div className="font-label-mono text-label-mono text-primary-container text-xs">
@@ -430,7 +430,7 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 {/* Metric 2 */}
 <div className="p-space-md lg:p-space-lg bg-surface-container-low">
 <div className="font-label-mono text-label-mono text-outline mb-2">JUDGE_ACCURACY</div>
-<div className="font-display-xl text-headline-lg lg:text-display-xl font-extrabold text-primary mb-1 tracking-tight">
+<div className="font-display-xl text-[32px] lg:text-[48px] font-extrabold text-primary mb-1 tracking-tight">
           99.94%
         </div>
 <div className="font-label-mono text-label-mono text-outline text-xs">
@@ -440,7 +440,7 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 {/* Metric 3 */}
 <div className="p-space-md lg:p-space-lg bg-surface-container-low">
 <div className="font-label-mono text-label-mono text-outline mb-2">PACKAGES_DEPLOYED</div>
-<div className="font-display-xl text-headline-lg lg:text-display-xl font-extrabold text-primary mb-1 tracking-tight">
+<div className="font-display-xl text-[32px] lg:text-[48px] font-extrabold text-primary mb-1 tracking-tight">
           42
         </div>
 <div className="font-label-mono text-label-mono text-primary-container text-xs">
@@ -450,7 +450,7 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 {/* Metric 4 */}
 <div className="p-space-md lg:p-space-lg bg-surface-container-low">
 <div className="font-label-mono text-label-mono text-outline mb-2">REGIONAL_TROPHIES</div>
-<div className="font-display-xl text-headline-lg lg:text-display-xl font-extrabold text-primary mb-1 tracking-tight">
+<div className="font-display-xl text-[32px] lg:text-[48px] font-extrabold text-primary mb-1 tracking-tight">
           06
         </div>
 <div className="font-label-mono text-label-mono text-secondary-container text-xs">
