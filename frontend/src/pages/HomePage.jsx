@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useEvents } from '../hooks/useEvents.js';
 
 export function HomePage() {
   const { data, isLoading } = useEvents({ limit: 3 });
   const dynamicEvents = data?.data || [];
+
+  const scrollToContests = useCallback(() => {
+    const target = document.getElementById('contests');
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Flash highlight the section on arrival
+    setTimeout(() => {
+      target.classList.add('section-highlight');
+      setTimeout(() => target.classList.remove('section-highlight'), 900);
+    }, 600);
+  }, []);
 
   return (
     <>
@@ -42,10 +53,10 @@ export function HomePage() {
           </p>
 {/* Interactive Action Triggers */}
 <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-space-md mb-space-xl">
-<a className="bg-primary-container text-surface-container-lowest px-5 py-3 font-headline-sm text-headline-sm font-bold flex items-center gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none border border-primary-container" href="#contests">
+<button onClick={scrollToContests} className="bg-primary-container text-surface-container-lowest px-5 py-3 font-headline-sm text-headline-sm font-bold flex items-center gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none border border-primary-container w-full sm:w-auto justify-center">
 <span className="">ENTER CONTEST ARENA</span>
 <span className="font-label-mono text-label-mono bg-surface-container-lowest text-primary-container px-1.5 py-0.5">[â†’]</span>
-</a>
+</button>
 <button className="bg-surface-container-low border border-outline text-on-surface hover:border-primary-container hover:text-primary-container px-4 py-3 font-code-md text-code-md flex items-center gap-2 transition-none" onClick={() => { navigator.clipboard.writeText('git clone https://github.com/kernel-collective/manifesto.git'); alert('Manifesto URI copied to clipboard.'); }}>
 <span className="text-outline">$</span>
 <span className="">git clone manifesto.git</span>
