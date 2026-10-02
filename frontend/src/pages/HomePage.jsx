@@ -19,29 +19,29 @@ export function HomePage() {
 <section className="border-b border-outline-variant bg-surface-container-high">
 <div className="w-full grid grid-cols-1 lg:grid-cols-12 border-collapse">
 {/* Left Column (7 Columns): Manifesto Anchor */}
-<div className="lg:col-span-7 p-space-md lg:p-space-xl border-b lg:border-b-0 lg:border-r border-outline-variant flex flex-col justify-between">
+<div className="lg:col-span-7 p-4 sm:p-space-md lg:p-space-xl border-b lg:border-b-0 lg:border-r border-outline-variant flex flex-col justify-between">
 <div>
 {/* Tag Header */}
-<div className="flex items-center gap-3 mb-space-lg">
-<span className="font-label-mono text-label-mono text-primary-container tracking-widest bg-surface-container-low px-2 py-0.5 border border-outline-variant">
+<div className="flex flex-wrap items-center gap-3 mb-space-lg">
+<span className="font-label-mono text-label-mono text-primary-container tracking-widest bg-surface-container-low px-2 py-0.5 border border-outline-variant text-[10px] sm:text-label-mono">
               // CAMPUS NODE: ACM &amp; OPEN-SOURCE CORE
             </span>
-<span className="font-ticker-mono text-ticker-mono text-on-surface-variant">
-              LAT: 42.3601Â° N // LON: 71.0942Â° W
+<span className="hidden sm:inline font-ticker-mono text-ticker-mono text-on-surface-variant">
+              LAT: 42.3601° N // LON: 71.0942° W
             </span>
 </div>
 {/* Massive Editorial Statement */}
-<h1 className="font-display-xl text-display-xl lg:text-display-xl text-primary uppercase font-extrabold tracking-tighter leading-none mb-space-lg">
+<h1 className="font-display-xl text-[36px] sm:text-[48px] lg:text-display-xl text-primary uppercase font-extrabold tracking-tighter leading-none mb-space-lg">
             FOR BUILDERS <br />
 <span className="italic font-light text-on-surface-variant">WHO REFUSE</span> <br />
-            TO WRITE <span className="bg-primary-container text-surface-container-lowest px-2 py-0.5 font-headline-md tracking-normal inline-block align-middle">{"{"} BOILERPLATE {"}"}</span>
+            TO WRITE <span className="bg-primary-container text-surface-container-lowest px-2 py-0.5 font-headline-sm tracking-normal inline-block align-middle text-[14px] sm:text-[16px] lg:text-headline-sm">{"{"}BOILERPLATE{"}"}  </span>
 </h1>
 {/* Dossier Subtitle */}
 <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-space-xl leading-relaxed border-l-2 border-outline-variant pl-4">
             An autonomous engineering syndicate at university. We compete in ICPC World Finals, benchmark bare-metal compilers, build zero-overhead virtualization runtimes, and deploy production software after midnight.
           </p>
 {/* Interactive Action Triggers */}
-<div className="flex flex-wrap items-center gap-space-md mb-space-xl">
+<div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-space-md mb-space-xl">
 <a className="bg-primary-container text-surface-container-lowest px-5 py-3 font-headline-sm text-headline-sm font-bold flex items-center gap-3 hover:-translate-x-0.5 hover:-translate-y-0.5 hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none border border-primary-container" href="#contests">
 <span className="">ENTER CONTEST ARENA</span>
 <span className="font-label-mono text-label-mono bg-surface-container-lowest text-primary-container px-1.5 py-0.5">[â†’]</span>
@@ -75,7 +75,7 @@ export function HomePage() {
 </div>
 </div>
 {/* Right Column (5 Columns): Interactive Code Editor & Live Judge Simulator */}
-<div className="lg:col-span-5 p-space-md lg:p-space-lg flex flex-col justify-between bg-surface-container-high">
+<div className="lg:col-span-5 p-4 sm:p-space-md lg:p-space-lg flex flex-col justify-between bg-surface-container-high">
 <div>
 {/* Code Buffer Tab Header */}
 <div className="flex items-center justify-between pb-3 border-b border-outline-variant mb-space-md font-label-mono text-label-mono">
@@ -97,7 +97,7 @@ export function HomePage() {
 </div>
 </div>
 {/* Code Buffer with Syntax Stylings */}
-<div className="bg-surface-container border border-outline-variant font-code-md text-code-md p-4 text-on-surface overflow-x-auto relative">
+<div className="bg-surface-container border border-outline-variant font-code-md text-code-md p-4 text-on-surface overflow-x-auto relative max-w-full">
 <div className="absolute top-2 right-2 text-xs font-label-mono text-outline select-none">solution.cpp</div>
 <pre className="leading-relaxed"><code><span className="text-secondary-container">#include</span> <span className="text-on-surface-variant"><iostream></iostream></span>
 <span className="text-secondary-container">#include</span> <span className="text-on-surface-variant"><vector></vector></span>
@@ -313,8 +313,8 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 <span className="text-outline">SEASON 2025.1</span>
 </div>
 {/* Leaderboard Table */}
-<div className="overflow-x-auto">
-<table className="w-full text-left font-label-mono text-label-mono border-collapse">
+<div className="overflow-x-auto -mx-1 px-1">
+<table className="w-full min-w-[480px] text-left font-label-mono text-label-mono border-collapse">
 <thead>
 <tr className="border-b border-outline-variant text-outline uppercase">
 <th className="py-2.5 px-3">RANK</th>
@@ -575,7 +575,7 @@ vector&lt;vector&lt;edge&gt;&gt; adj;
 <div className="flex-1 bg-surface-container-high hover:bg-primary-container transition-none h-[60%]"></div>
 <div className="flex-1 bg-surface-container-high hover:bg-primary-container transition-none h-[70%]"></div>
 </div>
-<div className="flex justify-between text-[10px] text-outline mt-1.5 font-label-mono">
+<div className="flex flex-wrap justify-between text-[10px] text-outline mt-1.5 font-label-mono gap-x-2 gap-y-1">
 <span className="">T - 30 DAYS</span>
 <span className="">MID-TERM REFACTOR</span>
 <span className="">ICPC REGIONAL QUALIFIERS</span>
