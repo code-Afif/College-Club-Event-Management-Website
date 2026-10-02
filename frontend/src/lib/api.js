@@ -6,11 +6,22 @@ export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/a
  * @returns {Promise<any>}
  */
 export async function apiFetch(endpoint, options = {}) {
-  const token = localStorage.getItem('adminToken');
+  const adminToken = localStorage.getItem('adminToken');
+  const userToken = localStorage.getItem('token');
+  const token = adminToken || userToken; // Prefer admin token if both exist, or decide based on endpoint? Actually, just pass whatever is available. If both, pass adminToken or let specific hooks handle it. Let's pass adminToken if endpoint starts with /admin, else userToken.
+  
+  let authHeader = '';
+  if (endpoint.startsWith('/admin') && adminToken) {
+    authHeader = `Bearer ${adminToken}`;
+  } else if (userToken) {
+    authHeader = `Bearer ${userToken}`;
+  } else if (adminToken) {
+    authHeader = `Bearer ${adminToken}`;
+  }
   
   const headers = {
     'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+    ...(authHeader ? { 'Authorization': authHeader } : {}),
     ...options.headers,
   };
 

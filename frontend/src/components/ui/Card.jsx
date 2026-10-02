@@ -25,3 +25,7 @@ export function CardContent({ className, children, ...props }) {
 export function CardFooter({ className, children, ...props }) {
   return <div className={cn("p-4 md:p-6 border-t border-outline-variant flex items-center bg-surface-container", className)} {...props}>{children}</div>;
 }
+
+export function CardTitle({ className, children, ...props }) {
+  return <h3 className={cn("font-headline font-bold text-on-surface", className)} {...props}>{children}</h3>;
+}

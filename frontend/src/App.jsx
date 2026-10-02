@@ -8,6 +8,11 @@ import { AdminLogin } from './pages/AdminLogin.jsx';
 import { AdminDashboard } from './pages/AdminDashboard.jsx';
 import { NotFoundPage } from './pages/NotFoundPage.jsx';
 import { ThemeProvider } from './contexts/ThemeContext.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import { LoginPage } from './pages/auth/LoginPage.jsx';
+import { SignupPage } from './pages/auth/SignupPage.jsx';
+import { AuthCallback } from './pages/auth/AuthCallback.jsx';
+import { ProtectedRoute } from './components/auth/ProtectedRoute.jsx';
 
 const queryClient = new QueryClient();
 
@@ -32,18 +37,23 @@ export default function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="events" element={<EventsPage />} />
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="events" element={<EventsPage />} />
+                <Route path="login" element={<LoginPage />} />
+                <Route path="signup" element={<SignupPage />} />
+                <Route path="auth/callback" element={<AuthCallback />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="*" element={<NotFoundPage />} />
-            </Route>
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

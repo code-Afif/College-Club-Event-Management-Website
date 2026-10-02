@@ -53,3 +53,34 @@ export function useAdminUpdateEvent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['events'] })
   });
 }
+
+export function useAdminUsers(filters = {}) {
+  const query = new URLSearchParams(filters).toString();
+  return useQuery({
+    queryKey: ['adminUsers', filters],
+    queryFn: () => apiFetch(`/admin/users?${query}`)
+  });
+}
+
+export function useAdminDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId) => 
+      apiFetch(`/admin/users/${userId}`, {
+        method: 'DELETE'
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminUsers'] })
+  });
+}
+
+export function useAdminUpdateUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => 
+      apiFetch(`/admin/users/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminUsers'] })
+  });
+}

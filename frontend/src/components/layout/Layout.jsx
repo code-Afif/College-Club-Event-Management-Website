@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 export function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
 
   // Close menu on route change
   useEffect(() => {
@@ -20,23 +22,16 @@ export function Layout() {
   return (
     <div className="text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-surface-container-lowest flex flex-col min-h-screen bg-surface-container-high overflow-x-hidden">
       {/* Header */}
-      <header className="w-full px-3 sm:px-space-md lg:px-space-lg flex items-center justify-between h-14 border-b border-outline-variant sticky top-0 z-50 bg-surface-container-high">
+      <header className="w-full px-3 sm:px-space-md lg:px-space-lg flex items-center justify-between h-14 border-b border-outline-variant sticky top-0 z-50 bg-surface-container-high relative">
 {/* Brand / Identity */}
 <div className="flex items-center gap-space-md">
 <Link className="font-headline-sm text-[13px] sm:text-headline-sm font-bold uppercase tracking-tight text-primary flex items-center gap-2 shrink-0" to="/">
 <span className="inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 bg-primary-container animate-pulse shrink-0"></span>
 <span className="">COLLECTIVE // SYS_LAB</span>
 </Link>
-<span className="hidden xl:inline-block px-1.5 py-0.5 border border-outline-variant bg-surface-container-low text-primary-container font-label-mono text-label-mono">
-        [SYS_REV 4.2]
-      </span>
-<div className="hidden 2xl:flex items-center gap-1.5 pl-2 text-on-surface-variant font-label-mono text-label-mono border-l border-outline-variant">
-<span className="inline-block w-1.5 h-1.5 bg-secondary-container"></span>
-<span className="">RUNNING: SPRING_DIV_1 [IN 04H 21M]</span>
-</div>
 </div>
 {/* Desktop Navigation */}
-<nav className="hidden md:flex items-center space-x-6">
+<nav className="hidden md:flex items-center space-x-6 absolute left-1/2 -translate-x-1/2">
 <Link className="text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/">
         Home
       </Link>
@@ -49,34 +44,29 @@ export function Layout() {
 </nav>
 {/* Trailing Actions & Shell Tools */}
 <div className="flex items-center gap-2 shrink-0">
-{/* Search Input inline right */}
-<div className="hidden lg:flex items-center bg-surface-container-low border border-outline-variant px-2.5 py-1 text-on-surface font-label-mono text-label-mono w-48 focus-within:border-primary-container">
-<span className="text-outline mr-1.5 font-bold">❯</span>
-<input className="bg-transparent border-0 p-0 text-on-surface placeholder:text-outline focus:ring-0 w-full font-label-mono text-label-mono" placeholder="grep cmd [⌘K]..." type="text" />
-</div>
-{/* Icon Actions - hidden on mobile */}
-<div className="hidden sm:flex items-center border border-outline-variant divide-x divide-outline-variant bg-surface-container-low">
-<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center" title="terminal">
-<span className="material-symbols-outlined text-[18px]">terminal</span>
-</button>
-<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center relative" title="notifications">
-<span className="material-symbols-outlined text-[18px]">notifications</span>
-<span className="absolute top-1 right-1 w-1.5 h-1.5 bg-secondary-container"></span>
-</button>
-<button className="p-1.5 text-on-surface-variant hover:text-primary-container transition-none flex items-center justify-center" title="code">
-<span className="material-symbols-outlined text-[18px]">code</span>
-</button>
-</div>
-{/* Trailing Action: terminal_join - hidden on mobile */}
-<button className="hidden md:inline-flex items-center gap-2 bg-primary-container text-surface-container-lowest px-3 py-1.5 font-label-mono text-label-mono font-bold hover:translate-x-[-1px] hover:translate-y-[-1px] hard-shadow-citron active:translate-x-0 active:translate-y-0 transition-none" onClick={() => { document.getElementById('cli-section')?.scrollIntoView({behavior: 'smooth'}) }}>
-<span className="">terminal_join</span>
-<span className="material-symbols-outlined text-[15px]">arrow_forward</span>
-</button>
-{/* Trailing Action: git_checkout - compact on mobile */}
-<a className="hidden sm:inline-flex items-center gap-1.5 border border-outline-variant bg-surface-container-low text-on-surface px-2 sm:px-2.5 py-1.5 font-label-mono text-label-mono hover:border-outline transition-none text-xs" href="https://github.com" rel="noreferrer" target="_blank">
-<span className="text-primary-container">$</span>
-<span className="">git_checkout</span>
-</a>
+{isAuthenticated ? (
+  <div className="hidden sm:flex items-center gap-3 ml-2">
+    <span className="text-primary-container font-label-mono text-label-mono uppercase">
+      {user?.name || user?.email}
+    </span>
+    <button 
+      onClick={logout}
+      className="inline-flex items-center gap-1.5 border border-outline-variant bg-surface-container-low text-on-surface px-2 sm:px-2.5 py-1.5 font-label-mono text-label-mono hover:border-error hover:text-error transition-none text-xs"
+    >
+      <span className="text-error">$</span>
+      <span className="">git_checkout</span>
+    </button>
+  </div>
+) : (
+  <div className="hidden sm:flex items-center gap-4 ml-2">
+    <Link className="text-on-surface-variant hover:text-primary-container font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/login">
+      Login
+    </Link>
+    <Link className="text-primary-container hover:text-on-surface font-label-mono text-label-mono uppercase tracking-wider transition-colors" to="/signup">
+      Sign Up
+    </Link>
+  </div>
+)}
 {/* Hamburger Button - mobile only */}
 <button
   className="md:hidden flex flex-col items-center justify-center gap-[5px] w-9 h-9 border border-outline-variant bg-surface-container-low text-on-surface-variant hover:border-primary-container hover:text-primary-container transition-none"
@@ -123,6 +113,34 @@ export function Layout() {
       >
         <span className="text-primary-container font-bold">/</span> Admin
       </Link>
+      {isAuthenticated ? (
+        <>
+          <div className="px-5 py-3 text-primary-container font-bold uppercase tracking-widest text-xs border-b border-outline-variant bg-surface-container-low">
+            // USER: {user?.name || user?.email}
+          </div>
+          <button
+            onClick={() => { logout(); setMenuOpen(false); }}
+            className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-error hover:bg-surface-container-low uppercase tracking-widest transition-none w-full text-left"
+          >
+            <span className="text-error font-bold">$</span> git_checkout
+          </button>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/login"
+            className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-low uppercase tracking-widest transition-none"
+          >
+            <span className="text-primary-container font-bold">/</span> Login
+          </Link>
+          <Link
+            to="/signup"
+            className="flex items-center gap-3 px-5 py-4 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-low uppercase tracking-widest transition-none"
+          >
+            <span className="text-primary-container font-bold">/</span> Sign Up
+          </Link>
+        </>
+      )}
     </nav>
     {/* Bottom status */}
     <div className="px-5 py-3 border-t border-outline-variant font-label-mono text-label-mono text-[10px] text-outline flex items-center gap-2">

@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import publicRoutes from './routes/public.js';
 import adminRoutes from './routes/admin.js';
 import uploadRoutes from './routes/upload.js';
+import authRoutes from './routes/auth.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -34,6 +35,7 @@ app.use('/api', limiter);
 
 // Routes
 app.use('/api', publicRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/upload', uploadRoutes);
 

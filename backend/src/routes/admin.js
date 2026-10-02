@@ -117,7 +117,9 @@ const getRegistrationsSchema = z.object({
 
 router.get('/registrations', validate(getRegistrationsSchema), async (req, res, next) => {
   try {
-    const { eventId, search, page = 1, limit = 20 } = req.query;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    const { eventId, search } = req.query;
     const where = {};
     if (eventId) where.eventId = eventId;
     if (search) {
@@ -171,6 +173,80 @@ router.get('/registrations/export', async (req, res, next) => {
     res.setHeader('Content-Disposition', 'attachment; filename="registrations.csv"');
     res.send(csvRows.join('\n'));
   } catch (error) {
+    next(error);
+  }
+});
+
+const getUsersSchema = z.object({
+  query: z.object({
+    page: z.string().regex(/^\d+$/).optional().transform(Number),
+    limit: z.string().regex(/^\d+$/).optional().transform(Number),
+  })
+});
+
+router.get('/users', validate(getUsersSchema), async (req, res, next) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
+    
+    const total = await prisma.user.count();
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
+
+    return sendSuccess(res, 'Users retrieved', users, {
+      page, limit, total, totalPages: Math.ceil(total / limit)
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const updateUserSchema = z.object({
+  body: z.object({
+    name: z.string().min(1).optional(),
+    email: z.string().email().optional(),
+  })
+});
+
+router.put('/users/:id', validate(updateUserSchema), async (req, res, next) => {
+  try {
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: req.body,
+      select: { id: true, name: true, email: true, createdAt: true, updatedAt: true }
+    });
+    return sendSuccess(res, 'User updated', user);
+  } catch (error) {
+    if (error.code === 'P2025') {
+      return sendError(res, 404, 'USER_NOT_FOUND', 'User not found');
+    }
+    if (error.code === 'P2002') {
+      return sendError(res, 400, 'DUPLICATE_EMAIL', 'Email is already in use');
+    }
+    next(error);
+  }
+});
+
+router.delete('/users/:id', async (req, res, next) => {
+  try {
+    await prisma.user.delete({
+      where: { id: req.params.id }
+    });
+    return sendSuccess(res, 'User deleted');
+  } catch (error) {
+    if (error.code === 'P2025') {
+      return sendError(res, 404, 'USER_NOT_FOUND', 'User not found');
+    }
     next(error);
   }
 });
